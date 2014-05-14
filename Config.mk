@@ -72,7 +72,7 @@ export TARGET_ARCH_FAM
 ARCH_LINKS =
 
 # The path pointing to the architecture specific header files.
-ARCH_INC := $(TARGET_ARCH_FAM)
+ARCH_INC := $(TARGET_ARCH_DIR)/include
 
 # For possible special header directories.
 # This can be overwritten from arch specific rules.
@@ -82,7 +82,7 @@ EXTRA_INC = $(ARCH_INC)
 # This must be before include minios.mk!
 include $(MINI-OS_ROOT)/$(TARGET_ARCH_DIR)/arch.mk
 
-extra_incl := $(foreach dir,$(EXTRA_INC),-isystem $(MINI-OS_ROOT)/include/$(dir))
+extra_incl := $(foreach dir,$(EXTRA_INC),-isystem $(MINI-OS_ROOT)/$(dir))
 
 DEF_CPPFLAGS += -isystem $(MINI-OS_ROOT)/include
 DEF_CPPFLAGS += -D__MINIOS__
