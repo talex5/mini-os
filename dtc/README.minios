@@ -1,0 +1,4 @@
+This code was imported from https://git.kernel.org/cgit/utils/dtc/dtc.git,
+commit 64c46b098b969502a74c8b0fd97e6f5e4aa07e21. To save space, the DTC code
+has been removed. The libfdt directory is unmodified, and the directory
+structure unchanged, to simplify future merging.
