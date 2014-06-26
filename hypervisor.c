@@ -36,7 +36,15 @@
 
 int in_callback;
 
-void do_hypervisor_callback(struct pt_regs *regs)
+/* Called from the interrupt handler when an event is pending.
+ * This default implementation calls do_event immendiately (from within
+ * the interrupt handler) for each pending event.
+ *
+ * If you want to handle events synchronously (e.g. checking for pending
+ * events yourself just before blocking), override this with a version
+ * that just clears evtchn_upcall_pending and returns.
+ */
+__attribute__((weak)) void do_hypervisor_callback(struct pt_regs *regs)
 {
     unsigned long  l1, l2, l1i, l2i;
     unsigned int   port;
