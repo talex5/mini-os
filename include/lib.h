@@ -227,6 +227,7 @@ int alloc_fd(enum fd_type type);
 void close_all_files(void);
 extern struct thread *main_thread;
 void sparse(unsigned long data, size_t size);
+char *minios_printf_render_float(char *buf, char *end, long double arg, char fmt, char qualifier, int size, int precision, int type);
 #endif
 
 #endif /* _LIB_H_ */

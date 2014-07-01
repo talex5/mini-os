@@ -260,6 +260,20 @@ static char * number(char * buf, char * end, long long num, int base, int size, 
     return buf;
 }
 
+__attribute__((weak)) char *minios_printf_render_float(char *buf, char *end, long double arg, char fmt, char qualifier, int size, int precision, int type)
+{
+    char *msg = "(float)";
+
+    while (*msg) {
+        if (buf <= end)
+            *buf = *msg;
+        ++buf;
+        ++msg;
+    }
+
+    return buf;
+}
+
 /**
 * vsnprintf - Format a string and place it in a buffer
 * @buf: The buffer to place the result into
@@ -277,6 +291,7 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
     int i, base;
     char *str, *end, c;
     const char *s;
+    long double ld;
 
     int flags;          /* flags to number() */
 
@@ -456,6 +471,21 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
             flags |= SIGN;
         case 'u':
             break;
+
+        case 'e':
+        case 'E':
+        case 'f':
+        case 'F':
+        case 'g':
+        case 'G':
+        case 'a':
+        case 'A':
+            if (qualifier == 'L')
+                ld = va_arg(args, long double);
+            else
+                ld = va_arg(args, double);
+            str = minios_printf_render_float(str, end, ld, *fmt, qualifier, field_width, precision, flags);
+            continue;
 
         default:
             if (str <= end)
