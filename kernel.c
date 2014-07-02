@@ -115,7 +115,7 @@ __attribute__((weak)) int app_main(start_info_t *si)
     return 0;
 }
 
-void start_kernel(void)
+__attribute__((weak)) void start_kernel(void)
 {
     /* Set up events. */
     init_events();
