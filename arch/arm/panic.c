@@ -81,7 +81,7 @@ void dump_registers(int *saved_registers) {
     printk("Stack dump (innermost last)\n");
     sp = (int *) saved_registers[13];
 
-    if (sp >= _boot_stack && sp <= _boot_stack_end)
+    if (sp <= _boot_stack_end)
         stack_top = _boot_stack_end;                    /* The boot stack */
     else if (sp >= irqstack && sp <= irqstack_end)
         stack_top = irqstack_end;                       /* The IRQ stack */

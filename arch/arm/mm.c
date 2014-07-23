@@ -5,6 +5,8 @@
 #include <libfdt.h>
 #include <lib.h>
 
+void arm_map_extra_stack_section(int);
+
 uint32_t physical_address_offset;
 
 unsigned long allocate_ondemand(unsigned long n, unsigned long alignment)
@@ -55,7 +57,16 @@ void arch_init_mm(unsigned long *start_pfn_p, unsigned long *max_pfn_p)
     BUG_ON(to_virt(mem_base) > (void *) &_text);          /* Our image isn't in our RAM! */
     *start_pfn_p = PFN_UP(to_phys(end));
     uint64_t heap_len = mem_size - (PFN_PHYS(*start_pfn_p) - mem_base);
-    *max_pfn_p = *start_pfn_p + PFN_DOWN(heap_len);
+
+    /* Hack: Use the last 1 MB as extra stack space */
+    int ram_top_pfn = *start_pfn_p + PFN_DOWN(heap_len);
+    int heap_top_pfn = (ram_top_pfn & ~0xff) - 0x100;
+    paddr_t heap_top = ((uint64_t) heap_top_pfn) << L1_PAGETABLE_SHIFT;
+
+    printk("Mapping 1 MB section at %llx as extra stack space.\n", (unsigned long long) heap_top);
+    arm_map_extra_stack_section(heap_top);
+
+    *max_pfn_p = heap_top_pfn;
 
     printk("Using pages %lu to %lu as free space for heap.\n", *start_pfn_p, *max_pfn_p);
 
