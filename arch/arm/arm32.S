@@ -148,6 +148,31 @@ stage2:
 
 	b	arch_init
 
+.globl arm_map_extra_stack_section
+@ At boot, we only have a 16 KB stack.
+@ Once we've found the rest of the RAM, we map the top 1 MB just below the boot stack.
+@ => r0 = physical address of 1 MB section of RAM to use (must be section aligned)
+arm_map_extra_stack_section:
+	@ Template (flags) for a 1 MB page-table entry.
+	@ TEX[2:0] C B = 001 1 1 (outer and inner write-back, write-allocate)
+	ldr	r1, =(0x2 +  		/* Section entry */ \
+		      0xc +  		/* C B */ \
+		      (3 << 10) + 	/* Read/write */ \
+		      (1 << 12) +	/* TEX */ \
+		      (1 << 16) +	/* Sharable */ \
+		      (1<<19))		/* Non-secure */
+	orr	r0, r0, r1		@ r1 = entry mapping to new memory
+	ldr	r2, =_page_dir		@ r2 -> translation table
+	ldr	r1, =(_boot_stack - 1024 * 1024)
+	str	r0, [r2, r1, lsr#18]
+
+	@ Invalidate TLB
+	dsb
+	mcr	p15, 0, r1, c8, c7, 0	@ TLBIALL
+	isb
+
+	bx	lr
+
 .pushsection .bss
 @ Note: calling arch_init zeroes out this region.
 .align 12
