@@ -39,6 +39,7 @@
 #define HYPERCALL_SIMPLE(hypercall)		\
 .globl HYPERVISOR_##hypercall;			\
 .align 4,0x90;					\
+.type HYPERVISOR_##hypercall, %function;	\
 HYPERVISOR_##hypercall:				\
         mov r12, #__HYPERVISOR_##hypercall;	\
         __HVC(XEN_IMM);				\
