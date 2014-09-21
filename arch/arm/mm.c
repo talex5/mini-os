@@ -9,12 +9,6 @@ void arm_map_extra_stack_section(int);
 
 uint32_t physical_address_offset;
 
-unsigned long allocate_ondemand(unsigned long n, unsigned long alignment)
-{
-    // FIXME
-    BUG();
-}
-
 void arch_init_mm(unsigned long *start_pfn_p, unsigned long *max_pfn_p)
 {
     int memory;
@@ -86,8 +80,59 @@ void arch_init_p2m(unsigned long max_pfn)
 {
 }
 
+static unsigned long demand_map_area_start;
+#define DEMAND_MAP_PAGES 160 /* 640 KiB is enough for anyone */
+
+// FIXME: the x86 backend doesn't track free/in-use explicitly
+// because it can read the pagetable. Can we do that too?
+
+// FIXME: because of the above there isn't a way to mark a page
+// as free, so we leak.
+
+/* One whole byte to signal free (true) or in-use (false) */
+static char demand_map_area_free[DEMAND_MAP_PAGES];
+
 void arch_init_demand_mapping_area(unsigned long cur_pfn)
 {
+    int i;
+    cur_pfn++;
+    printk("Next pfn = 0x%lx (== %p VA)\n", cur_pfn, pfn_to_virt(cur_pfn));
+
+    demand_map_area_start = (unsigned long) pfn_to_virt(cur_pfn);
+    cur_pfn += DEMAND_MAP_PAGES;
+    printk("Demand map memory at 0x%lx-0x%p.\n", 
+           demand_map_area_start, pfn_to_virt(cur_pfn));
+    for (i = 0; i < DEMAND_MAP_PAGES; i++ ) {
+        demand_map_area_free[i] = 1;
+    }
+}
+
+unsigned long allocate_ondemand(unsigned long n, unsigned long alignment)
+{
+    int i, j, found;
+    unsigned long addr;
+    if (alignment != 1) {
+        printk("allocate_ondemand: we only support alignment = 1 (was: %ld)\n", alignment);
+        BUG();
+    }
+    for (i = 0, j = 0; i < DEMAND_MAP_PAGES - n; i += j+1 ) {
+        /* Is the contiguous section free? */
+	found = 0;
+        for (j = 0; j < n; j++ )
+          if (!demand_map_area_free[i+j]) {
+              found = 1;
+	      break;
+	  }
+	if (found) continue;
+        /* It's free, so allocate it. */
+	for (j = 0; j < n; j++ )
+          demand_map_area_free[i+j] = 0;
+        addr = demand_map_area_start + i * PAGE_SIZE;
+        printk("allocate_ondemand(%ld, %ld) returning %lx\n", n, alignment, addr);
+        return addr;
+    }
+    printk("allocate_ondemand: demand map area is full.\n");
+    BUG();
 }
 
 /* Get Xen's suggested physical page assignments for the grant table. */
