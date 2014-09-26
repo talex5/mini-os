@@ -205,12 +205,15 @@ gntmap_map_grant_refs(struct gntmap *map,
     if (addr == 0)
         return NULL;
 
-    // FIXME: to_phys below is probably wrong on x86
     for (i = 0; i < count; i++) {
         ent = gntmap_find_free_entry(map);
         if (ent == NULL ||
             _gntmap_map_grant_ref(ent,
+#ifdef __arm__
                                   to_phys(addr + PAGE_SIZE * i),
+#else
+                                  addr + PAGE_SIZE * i,
+#endif
                                   domids[i * domids_stride],
                                   refs[i],
                                   writable) != 0) {
