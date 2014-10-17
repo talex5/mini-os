@@ -228,6 +228,10 @@ void init_time(void)
     printk("Initialising timer interface\n");
     port = bind_virq(VIRQ_TIMER, &timer_handler, NULL);
     unmask_evtchn(port);
+
+    /* This is needed to ensure we have the correct values before the first interrupt. */
+    get_time_values_from_xen();
+    update_wallclock();
 }
 
 void fini_time(void)
