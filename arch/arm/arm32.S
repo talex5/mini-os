@@ -2,7 +2,7 @@
 @ rely on for now.
 #define ZIMAGE_KERNEL_OFFSET 0x8000
 
-.section .text
+.section .bootcode
 
 .globl _start
 _start:
@@ -291,6 +291,7 @@ irq_handler:
 IRQ_handler:
 	.long	0x0
 
+.section .text
 
 .globl __arch_switch_threads
 .type __arch_switch_threads, %function
