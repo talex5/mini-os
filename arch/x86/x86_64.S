@@ -10,7 +10,8 @@
 	.ascii	",HYPERCALL_PAGE=0x2"
 	.ascii	",LOADER=generic"
 	.byte	0
-.text
+
+.section .bootcode
 
 #define ENTRY(X) .globl X ; X :
 .globl _start, shared_info, hypercall_page
@@ -35,6 +36,7 @@ shared_info:
 hypercall_page:
         .org 0x3000
 
+.text
 
 #define XEN_GET_VCPU_INFO(reg)	movq HYPERVISOR_shared_info,reg
 #define XEN_PUT_VCPU_INFO(reg)
