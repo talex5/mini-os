@@ -4,7 +4,7 @@ includedir=${prefix}/include/minios-xen
 libdir=${exec_prefix}/lib
 
 Name: mini-os
-Version: 0.2
+Version: 0.4.2
 URL: http://wiki.xen.org/wiki/Mini-OS
 Description: A tiny OS kernel that can run under Xen
 Cflags: -I${includedir} @ARCH_CFLAGS@
