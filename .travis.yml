@@ -1,0 +1,27 @@
+language: c
+sudo: false
+addons:
+  apt:
+    packages:
+    - python-dev
+    - gettext
+    - bin86
+    - bcc
+    - iasl
+    - uuid-dev
+    - libncurses5-dev
+    - pkg-config
+    - libglib2.0-dev
+    - wget
+    - libaio-dev
+    - libssl-dev
+    - libyajl-dev
+    - make
+    - libc6-dev-i386
+    - libpixman-1-dev
+#    - gcc-arm-linux-gnueabihf
+script:
+- make CONFIG_TEST=y CONFIG_XENBUS=y CONFIG_START_NETWORK=n CONFIG_BLKFRONT=n CONFIG_NETFRONT=n CONFIG_FBFRONT=n CONFIG_KBDFRONT=n CONFIG_CONSFRONT=n CONFIG_XC=n -j4
+- make install DESTDIR=/tmp/prefix
+- make clean
+#- make MINIOS_TARGET_ARCH=arm32 CROSS_COMPILE=arm-linux-gnueabihf- CONFIG_TEST=y CONFIG_XENBUS=y CONFIG_START_NETWORK=n CONFIG_BLKFRONT=n CONFIG_NETFRONT=n CONFIG_FBFRONT=n CONFIG_KBDFRONT=n CONFIG_CONSFRONT=n CONFIG_XC=n
