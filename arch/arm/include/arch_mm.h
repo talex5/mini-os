@@ -8,8 +8,9 @@ extern int _boot_stack[];
 extern int _boot_stack_end[];
 extern uint32_t physical_address_offset;	/* Add this to a virtual address to get the physical address (wraps at 4GB) */
 
-#define PAGE_SHIFT        12
-#define PAGE_SIZE        (1 << PAGE_SHIFT)
+#include "arch_limits.h"
+#define PAGE_SIZE       __PAGE_SIZE
+#define PAGE_SHIFT      __PAGE_SHIFT
 #define PAGE_MASK       (~(PAGE_SIZE-1))
 
 #define L1_PAGETABLE_SHIFT      12
