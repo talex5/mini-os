@@ -68,6 +68,24 @@ void get_xenbus(void)
     start_info.store_mfn = (unsigned long)value;
 }
 
+static void get_cmdline(void)
+{
+    int offset = fdt_path_offset(device_tree, "/chosen");
+    if (offset >= 0) {
+        int len;
+        const char *bootargs = fdt_getprop(device_tree, offset, "bootargs", &len);
+        if (bootargs) {
+            if (len < MAX_GUEST_CMDLINE) {
+                memcpy(start_info.cmd_line, bootargs, len);
+            } else {
+                printk("bootargs length %d longer than maximum %d\n", len, MAX_GUEST_CMDLINE);
+                BUG();
+            }
+        }
+    }
+    printk("cmd_line: %s\n", start_info.cmd_line);
+}
+
 /*
  * INITIAL C ENTRY POINT.
  */
@@ -102,6 +120,7 @@ void arch_init(void *dtb_pointer, uint32_t physical_offset)
     /* Fill in start_info */
     get_console();
     get_xenbus();
+    get_cmdline();
 
     gic_init();
 
