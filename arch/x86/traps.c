@@ -32,7 +32,8 @@ void machine_check(void);
 
 void dump_regs(struct pt_regs *regs)
 {
-    printk("Thread: %s\n", current->name);
+    if (current != NULL)
+        printk("Thread: %s\n", current->name);
 #ifdef __i386__    
     printk("EIP: %lx, EFLAGS %lx.\n", regs->eip, regs->eflags);
     printk("EBX: %08lx ECX: %08lx EDX: %08lx\n",
