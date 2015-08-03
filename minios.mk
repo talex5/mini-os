@@ -10,7 +10,7 @@ GCC_INSTALL = $(shell LANG=C gcc -print-search-dirs | sed -n -e 's/install: \(.*
 # NB. '-Wcast-qual' is nasty, so I omitted it.
 DEF_CFLAGS += -nostdinc
 DEF_CFLAGS += -isystem $(GCC_INSTALL)include
-DEF_CFLAGS += -fno-builtin -Wall -Werror -Wredundant-decls -Wno-format -Wno-redundant-decls -Wformat
+DEF_CFLAGS += -fno-builtin -Wall -Wredundant-decls -Wno-format -Wno-redundant-decls -Wformat
 DEF_CFLAGS += $(call cc-option,$(CC),-fno-stack-protector,)
 DEF_CFLAGS += $(call cc-option,$(CC),-fgnu89-inline)
 DEF_CFLAGS += -Wstrict-prototypes -Wnested-externs -Wpointer-arith -Winline
@@ -43,7 +43,7 @@ ARCH_LDFLAGS += -l$(ARCH_LIB_NAME)
 # Build the CFLAGS and ASFLAGS for compiling and assembling.
 # DEF_... flags are the common mini-os flags,
 # ARCH_... flags may be defined in arch/$(TARGET_ARCH_FAM/rules.mk
-CFLAGS := $(DEF_CFLAGS) $(ARCH_CFLAGS)
+CFLAGS := $(DEF_CFLAGS) $(ARCH_CFLAGS) $(TRAVIS_CFLAGS)
 CPPFLAGS := $(DEF_CPPFLAGS) $(ARCH_CPPFLAGS)
 ASFLAGS := $(DEF_ASFLAGS) $(ARCH_ASFLAGS)
 LDFLAGS := $(DEF_LDFLAGS) $(ARCH_LDFLAGS) -L$(TARGET_ARCH_DIR)
