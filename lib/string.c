@@ -237,4 +237,12 @@ void *memchr(const void *s, int c, size_t n)
     }
     return (NULL);
 }
+
+char *strerror(int errnum)
+{
+    static char *mesg = "strerror-not-implemented";
+
+    return mesg;
+}
+
 #endif
