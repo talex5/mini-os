@@ -175,7 +175,9 @@ init_gnttab(void)
         put_free_entry(i);
 
     gnttab_table = arch_init_gnttab(NR_GRANT_FRAMES);
+#ifdef CONFIG_VERBOSE_BOOT
     printk("gnttab_table mapped at %p.\n", gnttab_table);
+#endif
 }
 
 void

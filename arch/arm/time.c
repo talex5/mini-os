@@ -124,11 +124,15 @@ void block_domain(s_time_t until)
 
 void init_time(void)
 {
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Initialising timer interface\n");
+#endif
 
     __asm__ __volatile__("mrc p15, 0, %0, c14, c0, 0":"=r"(counter_freq));
     cntvct_at_init = read_virtual_count();
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Virtual Count register is %llx, freq = %d Hz\n", cntvct_at_init, counter_freq);
+#endif
 }
 
 void fini_time(void)

@@ -50,8 +50,10 @@ static void get_console(void)
     hvm_get_parameter(HVM_PARAM_CONSOLE_PFN, &v);
     start_info.console.domU.mfn = v;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Console is on port %d\n", start_info.console.domU.evtchn);
     printk("Console ring is at mfn %lx\n", (unsigned long) start_info.console.domU.mfn);
+#endif
 }
 
 void get_xenbus(void)
@@ -83,7 +85,9 @@ static void get_cmdline(void)
             }
         }
     }
+#ifdef CONFIG_VERBOSE_BOOT
     printk("cmd_line: %s\n", start_info.cmd_line);
+#endif
 }
 
 /*

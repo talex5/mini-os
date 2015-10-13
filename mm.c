@@ -404,17 +404,23 @@ void init_mm(void)
 
     unsigned long start_pfn, max_pfn;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("MM: Init\n");
+#endif
 
     arch_init_mm(&start_pfn, &max_pfn);
     /*
      * now we can initialise the page allocator
      */
+#ifdef CONFIG_VERBOSE_BOOT
     printk("MM: Initialise page allocator for %lx(%lx)-%lx(%lx)\n",
            (u_long)to_virt(PFN_PHYS(start_pfn)), (u_long)PFN_PHYS(start_pfn),
            (u_long)to_virt(PFN_PHYS(max_pfn)), (u_long)PFN_PHYS(max_pfn));
+#endif
     init_page_allocator(PFN_PHYS(start_pfn), PFN_PHYS(max_pfn));
+#ifdef CONFIG_VERBOSE_BOOT
     printk("MM: done\n");
+#endif
 
     arch_init_p2m(max_pfn);
     

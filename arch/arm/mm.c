@@ -15,12 +15,14 @@ void arch_init_mm(unsigned long *start_pfn_p, unsigned long *max_pfn_p)
     int prop_len = 0;
     const uint64_t *regs;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("    _text: %p(VA)\n", &_text);
     printk("    _etext: %p(VA)\n", &_etext);
     printk("    _erodata: %p(VA)\n", &_erodata);
     printk("    _edata: %p(VA)\n", &_edata);
     printk("    stack start: %p(VA)\n", _boot_stack);
     printk("    _end: %p(VA)\n", &_end);
+#endif
 
     if (fdt_num_mem_rsv(device_tree) != 0)
         printk("WARNING: reserved memory not supported!\n");
@@ -45,8 +47,10 @@ void arch_init_mm(unsigned long *start_pfn_p, unsigned long *max_pfn_p)
     unsigned int end = (unsigned int) &_end;
     paddr_t mem_base = fdt64_to_cpu(regs[0]);
     uint64_t mem_size = fdt64_to_cpu(regs[1]);
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Found memory at 0x%llx (len 0x%llx)\n",
             (unsigned long long) mem_base, (unsigned long long) mem_size);
+#endif
 
     BUG_ON(to_virt(mem_base) > (void *) &_text);          /* Our image isn't in our RAM! */
     *start_pfn_p = PFN_UP(to_phys(end));
@@ -57,12 +61,16 @@ void arch_init_mm(unsigned long *start_pfn_p, unsigned long *max_pfn_p)
     int heap_top_pfn = (ram_top_pfn & ~0xff) - 0x100;
     paddr_t heap_top = ((uint64_t) heap_top_pfn) << L1_PAGETABLE_SHIFT;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Mapping 1 MB section at %llx as extra stack space.\n", (unsigned long long) heap_top);
+#endif
     arm_map_extra_stack_section(heap_top);
 
     *max_pfn_p = heap_top_pfn;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Using pages %lu to %lu as free space for heap.\n", *start_pfn_p, *max_pfn_p);
+#endif
 
     /* The device tree is probably in memory that we're about to hand over to the page
      * allocator, so move it to the end and reserve that space.
@@ -96,12 +104,16 @@ void arch_init_demand_mapping_area(unsigned long cur_pfn)
 {
     int i;
     cur_pfn++;
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Next pfn = 0x%lx (== %p VA)\n", cur_pfn, pfn_to_virt(cur_pfn));
+#endif
 
     demand_map_area_start = (unsigned long) pfn_to_virt(cur_pfn);
     cur_pfn += DEMAND_MAP_PAGES;
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Demand map memory at 0x%lx-0x%p.\n", 
            demand_map_area_start, pfn_to_virt(cur_pfn));
+#endif
     for (i = 0; i < DEMAND_MAP_PAGES; i++ ) {
         demand_map_area_free[i] = 1;
     }
@@ -155,7 +167,9 @@ static paddr_t get_gnttab_base(void)
 
     gnttab_base = fdt64_to_cpu(regs[0]);
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("FDT suggests grant table base %llx\n", (unsigned long long) gnttab_base);
+#endif
 
     return gnttab_base;
 }

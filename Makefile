@@ -32,6 +32,7 @@ CONFIG_KBDFRONT ?= y
 CONFIG_CONSFRONT ?= y
 CONFIG_XENBUS ?= y
 CONFIG_XC ?=y
+CONFIG_VERBOSE_BOOT ?= y
 CONFIG_LWIP ?= $(lwip)
 
 # Export config items as compiler directives
@@ -169,7 +170,7 @@ $(TARGET_ARCH_DIR)/include/mini-os:
 
 .PHONY: arch_lib
 arch_lib:
-	$(MAKE) --directory=$(TARGET_ARCH_DIR) OBJ_DIR=$(OBJ_DIR)/$(TARGET_ARCH_DIR) || exit 1;
+	$(MAKE) --directory=$(TARGET_ARCH_DIR) OBJ_DIR=$(OBJ_DIR)/$(TARGET_ARCH_DIR) CONFIG_VERBOSE_BOOT=$(CONFIG_VERBOSE_BOOT) || exit 1;
 
 ifeq ($(CONFIG_LWIP),y)
 # lwIP library

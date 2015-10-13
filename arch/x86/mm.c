@@ -219,7 +219,9 @@ static void build_pagetable(unsigned long *start_pfn, unsigned long *max_pfn)
     end_address = (unsigned long)pfn_to_virt(*max_pfn);
 
     /* We worked out the virtual memory range to map, now mapping loop */
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Mapping memory range 0x%lx - 0x%lx\n", start_address, end_address);
+#endif
 
     while ( start_address < end_address )
     {
@@ -294,7 +296,9 @@ static void set_readonly(void *text, void *etext)
     int count = 0;
     int rc;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("setting %p-%p readonly\n", text, etext);
+#endif
 
     while ( start_address + PAGE_SIZE <= end_address )
     {
@@ -326,7 +330,11 @@ static void set_readonly(void *text, void *etext)
             count++;
         }
         else
+	{
+#ifdef CONFIG_VERBOSE_BOOT
             printk("skipped %lx\n", start_address);
+#endif
+	}
 
         start_address += PAGE_SIZE;
 
@@ -516,8 +524,10 @@ void arch_init_demand_mapping_area(unsigned long cur_pfn)
 
     demand_map_area_start = (unsigned long) pfn_to_virt(cur_pfn);
     cur_pfn += DEMAND_MAP_PAGES;
+#ifdef CONFIG_VERBOSE_BOOT
     printk("Demand map pfns at %lx-%p.\n", 
            demand_map_area_start, pfn_to_virt(cur_pfn));
+#endif
 
 #ifdef HAVE_LIBC
     cur_pfn++;
@@ -911,12 +921,14 @@ void arch_init_mm(unsigned long* start_pfn_p, unsigned long* max_pfn_p)
 {
     unsigned long start_pfn, max_pfn;
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("      _text: %p(VA)\n", &_text);
     printk("     _etext: %p(VA)\n", &_etext);
     printk("   _erodata: %p(VA)\n", &_erodata);
     printk("     _edata: %p(VA)\n", &_edata);
     printk("stack start: %p(VA)\n", stack);
     printk("       _end: %p(VA)\n", &_end);
+#endif
 
     /* First page follows page table pages and 3 more pages (store page etc) */
     start_pfn = PFN_UP(to_phys(start_info.pt_base)) + 
@@ -932,8 +944,10 @@ void arch_init_mm(unsigned long* start_pfn_p, unsigned long* max_pfn_p)
     }
 #endif
 
+#ifdef CONFIG_VERBOSE_BOOT
     printk("  start_pfn: %lx\n", start_pfn);
     printk("    max_pfn: %lx\n", max_pfn);
+#endif
 
     build_pagetable(&start_pfn, &max_pfn);
     clear_bootstrap();

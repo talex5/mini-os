@@ -209,7 +209,9 @@ void gic_init(void) {
 
             gic.gicd_base = to_virt((long) fdt64_to_cpu(reg[0]));
             gic.gicc_base = to_virt((long) fdt64_to_cpu(reg[2]));
+#ifdef CONFIG_VERBOSE_BOOT
             printk("Found GIC: gicd_base = %p, gicc_base = %p\n", gic.gicd_base, gic.gicc_base);
+#endif
             break;
         }
     }

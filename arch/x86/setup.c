@@ -115,6 +115,7 @@ arch_init(start_info_t *si)
 
 	/* print out some useful information  */
 	printk("Xen Minimal OS!\n");
+#ifdef CONFIG_VERBOSE_BOOT
 	printk("  start_info: %p(VA)\n", si);
 	printk("    nr_pages: 0x%lx\n", si->nr_pages);
 	printk("  shared_inf: 0x%08lx(MA)\n", si->shared_info);
@@ -127,6 +128,7 @@ arch_init(start_info_t *si)
 	printk("    cmd_line: %s\n",
 			si->cmd_line ? (const char *)si->cmd_line : "NULL");
 	printk("       stack: %p-%p\n", stack, stack + sizeof(stack));
+#endif
 
 	/* set up minimal memory infos */
 	phys_to_machine_mapping = (unsigned long *)start_info.mfn_list;
