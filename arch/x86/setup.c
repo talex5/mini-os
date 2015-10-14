@@ -29,6 +29,7 @@
 #include <mini-os/os.h>
 #include <mini-os/lib.h> /* for printk, memcpy */
 #include <mini-os/kernel.h>
+#include <mini-os/console.h>
 #include <xen/xen.h>
 
 /*
@@ -114,7 +115,7 @@ arch_init(start_info_t *si)
 	memcpy(&start_info, si, sizeof(*si));
 
 	/* print out some useful information  */
-	printk("Xen Minimal OS!\n");
+	minios_show_banner();
 #ifdef CONFIG_VERBOSE_BOOT
 	printk("  start_info: %p(VA)\n", si);
 	printk("    nr_pages: 0x%lx\n", si->nr_pages);

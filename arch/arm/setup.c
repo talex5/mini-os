@@ -50,6 +50,7 @@ static void get_console(void)
     hvm_get_parameter(HVM_PARAM_CONSOLE_PFN, &v);
     start_info.console.domU.mfn = v;
 
+    minios_show_banner();
 #ifdef CONFIG_VERBOSE_BOOT
     printk("Console is on port %d\n", start_info.console.domU.evtchn);
     printk("Console ring is at mfn %lx\n", (unsigned long) start_info.console.domU.mfn);

@@ -162,3 +162,8 @@ void init_console(void)
     /* This is also required to notify the daemon */
     printk("done.\n");
 }
+
+__attribute__((weak)) void minios_show_banner(void)
+{
+    printk("Xen Minimal OS!\n");
+}
