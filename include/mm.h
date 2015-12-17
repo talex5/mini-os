@@ -42,6 +42,8 @@
 #define STACK_SIZE_PAGE_ORDER __STACK_SIZE_PAGE_ORDER
 #define STACK_SIZE __STACK_SIZE
 
+extern unsigned long minios_heap_pages_total;
+extern unsigned long minios_heap_pages_used;
 
 void init_mm(void);
 unsigned long alloc_pages(int order);
