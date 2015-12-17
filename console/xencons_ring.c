@@ -45,6 +45,7 @@ int xencons_ring_send_no_notify(struct consfront_dev *dev, const char *data, uns
         if (!intf)
             return sent;
 
+    while (sent < len) {
 	cons = intf->out_cons;
 	prod = intf->out_prod;
 	mb();
@@ -55,6 +56,11 @@ int xencons_ring_send_no_notify(struct consfront_dev *dev, const char *data, uns
 
 	wmb();
 	intf->out_prod = prod;
+
+	if (sent < len) {
+	    block_domain(MILLISECS(10));
+	}
+    }
     
     return sent;
 }
