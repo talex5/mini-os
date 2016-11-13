@@ -16,7 +16,7 @@ install: [
 remove: [
   ["rm" "-r"
     "%{prefix}%/lib/minios-xen"
-    "%{prefix}%/lib/pkgconfig/libminios-xen.pc"
+    "%{prefix}%/share/pkgconfig/libminios-xen.pc"
     "%{prefix}%/include/minios-xen"
   ]
 ]

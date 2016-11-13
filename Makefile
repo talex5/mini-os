@@ -238,7 +238,7 @@ libminios.a: $(HEAD_OBJ) $(APP_O) $(OBJS) arch_lib
 .PHONY: install
 install: libminios.a libminios-xen.pc
 	$(INSTALL_DIR) $(DESTDIR)$(LIBDIR)/minios-xen
-	$(INSTALL_DIR) $(DESTDIR)$(LIBDIR)/pkgconfig
+	$(INSTALL_DIR) $(DESTDIR)${PREFIX}/share/pkgconfig
 	$(INSTALL_DIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL_DIR) $(DESTDIR)$(INCLUDEDIR)/minios-xen
 	$(eval REALDESTDIR := $(abspath $(DESTDIR)))
@@ -251,7 +251,7 @@ install: libminios.a libminios-xen.pc
 	(cd include/xen && find -H . -type f | xargs -I {} $(INSTALL_DATA) {} $(REALDESTDIR)$(INCLUDEDIR)/minios-xen/xen/{})
 	[ -L $(REALDESTDIR)$(INCLUDEDIR)/minios-xen/mini-os ] || ln -s . $(REALDESTDIR)$(INCLUDEDIR)/minios-xen/mini-os
 	$(INSTALL_DATA) $(foreach dir,$(EXTRA_INC),$(wildcard $(MINI-OS_ROOT)/$(dir)/*.h)) $(REALDESTDIR)$(INCLUDEDIR)/minios-xen/
-	$(INSTALL_DATA) libminios-xen.pc $(REALDESTDIR)$(LIBDIR)/pkgconfig
+	$(INSTALL_DATA) libminios-xen.pc $(REALDESTDIR)share/pkgconfig
 
 .PHONY: clean arch_clean
 
